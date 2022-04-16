@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">NMedia</string>
     <string name="hello_text">NMedia!</string>
+    <string name="avatar_text">Netology. University of Internet professions</string>
+    <string name="post_date"> May 21 18:36</string>
+    <string name="post_text">Таким образом начало повседневной работы по формированию позиции способствует подготовки и реализации новых предложений. Идейные соображения высшего порядка, а также начало повседневной работы по формированию позиции играет важную роль в формировании форм развития. Равным образом рамки и место обучения кадров влечет за собой процесс внедрения и модернизации систем массового участия. Идейные соображения высшего порядка, а также дальнейшее развитие различных форм деятельности способствует подготовки и реализации существенных финансовых и административных условий. https://google.com</string>
+    <string name="post_text_link_part" translatable="false">https://google.com</string>
+    <string name="post_count_likes" translatable="false">10000</string>
 </resources>
