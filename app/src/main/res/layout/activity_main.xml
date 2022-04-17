@@ -102,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:text="@string/post_count_likes"
+            tools:text="@string/post_count_likes"
             android:textColor="@color/gray"
             app:layout_constraintStart_toEndOf="@id/likes_imageview"
             app:layout_constraintTop_toTopOf="parent" />
@@ -124,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:text="@string/post_count_likes"
+            tools:text="@string/post_count_likes"
             android:textColor="@color/gray"
             app:layout_constraintStart_toEndOf="@id/post_share_imageview"
             app:layout_constraintTop_toTopOf="parent" />
@@ -144,7 +144,7 @@
             android:id="@+id/count_views_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/post_count_likes"
+            tools:text="@string/post_count_likes"
             android:textColor="@color/gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
