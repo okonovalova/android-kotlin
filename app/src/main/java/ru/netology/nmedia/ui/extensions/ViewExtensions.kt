@@ -1,4 +1,4 @@
-package ru.netology.nmedia.extensions
+package ru.netology.nmedia.ui.extensions
 
 import android.text.SpannableString
 import android.text.Spanned
