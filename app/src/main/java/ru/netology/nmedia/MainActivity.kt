@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         initListeners()
     }
 
-    fun initViews() {
+    private fun initViews() {
         binding.postTextTextview.setStyledSpan(
             getString(R.string.post_text_link_part),
             getColor(R.color.teal_200)
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding.countViewsTextview.text = CountMapper.mapCountToTitle(postInfo.viewsCount)
     }
 
-    fun initListeners() {
+    private fun initListeners() {
         binding.likesImageview.setOnClickListener {
             onLikeButtonClicked(it)
         }
