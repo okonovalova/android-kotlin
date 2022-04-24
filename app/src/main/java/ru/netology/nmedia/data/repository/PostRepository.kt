@@ -4,6 +4,6 @@ import androidx.lifecycle.LiveData
 import ru.netology.nmedia.data.model.PostInfo
 
 interface PostRepository {
-    fun getPostData(): LiveData<PostInfo>
-    fun updatePostData(postInfo: PostInfo)
+    fun getPostsData(): LiveData<List<PostInfo>>
+    fun updatePostsData(postInfo: List<PostInfo>)
 }
