@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header_layout"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/avatar_text"
+            tools:text="@string/avatar_text"
             android:textColor="@color/gray"
             app:layout_constraintBottom_toTopOf="@id/post_date_textview"
             app:layout_constraintEnd_toStartOf="@id/more_imageview"
@@ -42,7 +42,7 @@
             android:id="@+id/post_date_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/post_date"
+            tools:text="@string/post_date"
             android:textColor="@color/gray"
             app:layout_constraintBottom_toBottomOf="@id/logo_imageview"
             app:layout_constraintStart_toStartOf="@id/logo_name_textview"
@@ -52,7 +52,6 @@
             android:id="@+id/more_imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:padding="16dp"
             android:src="@drawable/ic_more_vert_24"
@@ -68,7 +67,7 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="18dp"
-        android:text="@string/post_text"
+        tools:text="@string/post_text"
         android:textColor="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
