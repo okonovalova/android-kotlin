@@ -1,6 +1,7 @@
-package ru.netology.nmedia.data.model
+package ru.netology.nmedia.ui.posts.model
 
 data class PostInfoUi(
+    val id: Int,
     val likesCount: String,
     val sharedCount: String,
     val viewsCount: String,

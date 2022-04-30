@@ -6,6 +6,7 @@ import ru.netology.nmedia.data.model.PostInfo
 
 class PostRepositoryImpl : PostRepository {
     private val postInfo: PostInfo = PostInfo(
+        id = 1,
         likesCount = 999,
         sharedCount = 1599999,
         viewsCount = 1499,
@@ -16,13 +17,16 @@ class PostRepositoryImpl : PostRepository {
         linkPart = "https://google.com"
     )
 
-    private val postInfoLiveData: MutableLiveData<PostInfo> = MutableLiveData(postInfo)
+    private val posts: MutableList<PostInfo> =
+        mutableListOf(postInfo, postInfo.copy(id = 2, isLiked = true, sharedCount = 0), postInfo.copy(id = 3), postInfo.copy(id = 4), postInfo.copy(id = 5))
 
-    override fun getPostData(): LiveData<PostInfo> {
-        return postInfoLiveData
+    private val postsLiveData: MutableLiveData<List<PostInfo>> = MutableLiveData(posts)
+
+    override fun getPostsData(): LiveData<List<PostInfo>> {
+        return postsLiveData
     }
 
-    override fun updatePostData(postInfo: PostInfo) {
-        postInfoLiveData.value = postInfo
+    override fun updatePostsData(postsInfo: List<PostInfo>) {
+        postsLiveData.value = postsInfo
     }
 }

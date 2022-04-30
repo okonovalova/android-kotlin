@@ -1,12 +1,13 @@
-package ru.netology.nmedia.ui.mapper
+package ru.netology.nmedia.ui.posts.mapper
 
 import ru.netology.nmedia.data.model.PostInfo
-import ru.netology.nmedia.data.model.PostInfoUi
+import ru.netology.nmedia.ui.posts.model.PostInfoUi
 
 object UiMapper {
 
     fun mapPostInfoToPostInfoUi(postInfo: PostInfo): PostInfoUi {
         return PostInfoUi(
+            id = postInfo.id,
             likesCount = mapCountToTitle(postInfo.likesCount),
             sharedCount = mapCountToTitle(postInfo.sharedCount),
             viewsCount = mapCountToTitle(postInfo.viewsCount),
