@@ -17,9 +17,9 @@ class PostViewHolder(
 
     fun bind(postInfoUi: PostInfoUi) {
         with(binding) {
-            countLikesTextview.text = postInfoUi.likesCount
-            countSharesTextview.text = postInfoUi.sharedCount
-            countViewsTextview.text = postInfoUi.viewsCount
+            likesButton.text = postInfoUi.likesCount
+            postShareButton.text = postInfoUi.sharedCount
+            postViewButton.text = postInfoUi.viewsCount
             logoNameTextview.text = postInfoUi.authorName
             postDateTextview.text = postInfoUi.date
             postTextTextview.text = postInfoUi.content
@@ -38,25 +38,19 @@ class PostViewHolder(
 
     private fun updateLikeView(isLiked: Boolean) {
         if (isLiked) {
-            binding.likesImageview.setImageResource(R.drawable.ic_liked_24)
-            binding.likesImageview.setColorFilter(
-                ContextCompat.getColor(context, R.color.red),
-                android.graphics.PorterDuff.Mode.MULTIPLY
-            )
+            binding.likesButton.setIconResource(R.drawable.ic_liked_24)
+            binding.likesButton.setIconTintResource(R.color.red)
         } else {
-            binding.likesImageview.setImageResource(R.drawable.ic_favorite_border_24)
-            binding.likesImageview.setColorFilter(
-                ContextCompat.getColor(context, R.color.gray),
-                android.graphics.PorterDuff.Mode.MULTIPLY
-            )
+            binding.likesButton.setIconResource(R.drawable.ic_favorite_border_24)
+            binding.likesButton.setIconTintResource(R.color.gray)
         }
     }
 
     private fun initListeners(postInfoUi: PostInfoUi) {
-        binding.likesImageview.setOnClickListener {
+        binding.likesButton.setOnClickListener {
             onLikelistener(postInfoUi)
         }
-        binding.postShareImageview.setOnClickListener {
+        binding.postShareButton.setOnClickListener {
             onSharelistener(postInfoUi)
         }
     }
