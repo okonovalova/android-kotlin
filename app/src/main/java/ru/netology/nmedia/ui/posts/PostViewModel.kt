@@ -1,6 +1,7 @@
 package ru.netology.nmedia.ui.posts
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import ru.netology.nmedia.data.model.PostInfo
@@ -12,8 +13,9 @@ import ru.netology.nmedia.ui.posts.mapper.UiMapper
 class PostViewModel : ViewModel() {
     private val postRepository: PostRepository = PostRepositoryImpl()
     private val data: LiveData<List<PostInfo>> = postRepository.getPostsData()
+    val editPostData: MutableLiveData<PostInfoUi?> = MutableLiveData(null)
 
-    val uiData: LiveData<List<PostInfoUi>> = postRepository.getPostsData()
+    val uiData: LiveData<List<PostInfoUi>> = data
         .map {
             it.map {
                 UiMapper.mapPostInfoToPostInfoUi(it)
@@ -33,7 +35,6 @@ class PostViewModel : ViewModel() {
         postRepository.updatePostsData(posts)
     }
 
-
     fun onShareButtonClicked(postInfoUi: PostInfoUi) {
         val posts = data.value?.toMutableList() ?: return
         val index = posts.indexOfFirst { it.id == postInfoUi.id }
@@ -41,4 +42,54 @@ class PostViewModel : ViewModel() {
         posts[index] = posts[index].copy(sharedCount = posts[index].sharedCount + 1)
         postRepository.updatePostsData(posts)
     }
+
+    fun onRemoveMenuItemClicked(postInfoUi: PostInfoUi) {
+        val posts = data.value?.toMutableList() ?: return
+        val index = posts.indexOfFirst { it.id == postInfoUi.id }
+        if (index == -1) return
+        posts.remove(posts[index])
+        postRepository.updatePostsData(posts)
+    }
+
+    fun onSaveButtonClicked(postText: String) {
+        if (editPostData.value == null) addPost(postText) else editPost(postText)
+    }
+
+    fun onEditMenuItemClicked(postInfoUi: PostInfoUi) {
+        editPostData.value = postInfoUi
+    }
+
+    fun onCancelButtonClicked() {
+        editPostData.value = null
+    }
+
+    private fun addPost(postText: String) {
+        val posts = data.value?.toMutableList() ?: return
+        val lastPostId = posts.lastOrNull()?.id ?: 0
+        val post: PostInfo = PostInfo(
+            id = lastPostId + 1,
+            likesCount = 0,
+            sharedCount = 0,
+            viewsCount = 0,
+            isLiked = false,
+            authorName = "Нетология. Университет интернет-профессий",
+            date = "21 мая 18:36",
+            content = postText,
+            linkPart = ""
+        )
+        posts.add(post)
+        postRepository.updatePostsData(posts)
+    }
+
+    private fun editPost(postText: String) {
+        val posts = data.value?.toMutableList() ?: return
+        val postId = editPostData.value?.id ?: -1
+        val index = posts.indexOfFirst { it.id == postId }
+        if (index != -1) {
+            posts[index] = posts[index].copy(content = postText)
+            postRepository.updatePostsData(posts)
+        }
+        editPostData.value = null
+    }
+
 }

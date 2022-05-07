@@ -26,7 +26,7 @@
         android:maxLines="1"
         android:textColor="@color/gray"
         app:layout_constraintBottom_toTopOf="@id/post_date_textview"
-        app:layout_constraintEnd_toStartOf="@id/more_imageview"
+        app:layout_constraintEnd_toStartOf="@id/menu_imageview"
         app:layout_constraintStart_toEndOf="@id/logo_imageview"
         app:layout_constraintTop_toTopOf="@id/logo_imageview"
         app:layout_constraintVertical_chainStyle="packed"
@@ -43,7 +43,7 @@
         tools:text="@string/post_date" />
 
     <ImageView
-        android:id="@+id/more_imageview"
+        android:id="@+id/menu_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:foreground="?android:attr/selectableItemBackground"

@@ -18,7 +18,13 @@ class PostRepositoryImpl : PostRepository {
     )
 
     private val posts: MutableList<PostInfo> =
-        mutableListOf(postInfo, postInfo.copy(id = 2, isLiked = true, sharedCount = 0), postInfo.copy(id = 3), postInfo.copy(id = 4), postInfo.copy(id = 5))
+        mutableListOf(
+            postInfo,
+            postInfo.copy(id = 2, isLiked = true, sharedCount = 0),
+            postInfo.copy(id = 3),
+            postInfo.copy(id = 4),
+            postInfo.copy(id = 5)
+        )
 
     private val postsLiveData: MutableLiveData<List<PostInfo>> = MutableLiveData(posts)
 
