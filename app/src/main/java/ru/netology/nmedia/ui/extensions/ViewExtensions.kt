@@ -1,8 +1,11 @@
 package ru.netology.nmedia.ui.extensions
 
+import android.content.Context
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 
 fun TextView.setStyledSpan(
@@ -24,4 +27,10 @@ fun TextView.setStyledSpan(
                 }
             }
         }
+}
+
+fun View.hideKeyboard() {
+    val inputMethodManager =
+        this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(this.windowToken, 0)
 }
