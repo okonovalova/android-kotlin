@@ -7,4 +7,5 @@ interface OnInteractionListener {
     fun onEdit(post: PostInfoUi)
     fun onRemove(post: PostInfoUi)
     fun onShare(post: PostInfoUi)
+    fun onPlayVideo(videoUrl: String)
 }

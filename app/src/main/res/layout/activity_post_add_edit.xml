@@ -4,18 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/post_list_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/add_panel_layout"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="3"
-        tools:listitem="@layout/item_post" />
+    tools:context=".ui.PostAddEditActivity">
 
     <include
         android:id="@+id/edit_layout"
@@ -44,7 +33,6 @@
             android:layout_weight="1"
             android:hint="@string/post_text_hint"
             android:importantForAutofill="no"
-            android:maxLines="3"
             android:minHeight="48dp"
             android:padding="16dp" />
 

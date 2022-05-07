@@ -13,7 +13,6 @@ import ru.netology.nmedia.ui.posts.mapper.UiMapper
 class PostViewModel : ViewModel() {
     private val postRepository: PostRepository = PostRepositoryImpl()
     private val data: LiveData<List<PostInfo>> = postRepository.getPostsData()
-    val editPostData: MutableLiveData<PostInfoUi?> = MutableLiveData(null)
 
     val uiData: LiveData<List<PostInfoUi>> = data
         .map {
@@ -51,16 +50,8 @@ class PostViewModel : ViewModel() {
         postRepository.updatePostsData(posts)
     }
 
-    fun onSaveButtonClicked(postText: String) {
-        if (editPostData.value == null) addPost(postText) else editPost(postText)
-    }
-
-    fun onEditMenuItemClicked(postInfoUi: PostInfoUi) {
-        editPostData.value = postInfoUi
-    }
-
-    fun onCancelButtonClicked() {
-        editPostData.value = null
+    fun onSaveButtonClicked(postText: String, postInfoUi: PostInfoUi?) {
+        if (postInfoUi == null) addPost(postText) else editPost(postText, postInfoUi)
     }
 
     private fun addPost(postText: String) {
@@ -81,15 +72,14 @@ class PostViewModel : ViewModel() {
         postRepository.updatePostsData(posts)
     }
 
-    private fun editPost(postText: String) {
+    private fun editPost(postText: String, postInfoUi: PostInfoUi) {
         val posts = data.value?.toMutableList() ?: return
-        val postId = editPostData.value?.id ?: -1
+        val postId = postInfoUi.id
         val index = posts.indexOfFirst { it.id == postId }
         if (index != -1) {
             posts[index] = posts[index].copy(content = postText)
             postRepository.updatePostsData(posts)
         }
-        editPostData.value = null
     }
 
 }
