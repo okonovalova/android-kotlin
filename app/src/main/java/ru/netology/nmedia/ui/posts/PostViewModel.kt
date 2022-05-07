@@ -1,17 +1,16 @@
 package ru.netology.nmedia.ui.posts
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
+import android.app.Application
+import androidx.lifecycle.*
 import ru.netology.nmedia.data.model.PostInfo
 import ru.netology.nmedia.ui.posts.model.PostInfoUi
 import ru.netology.nmedia.data.repository.PostRepository
 import ru.netology.nmedia.data.repository.PostRepositoryImpl
+import ru.netology.nmedia.data.repository.PostRepositorySharedPrefsImpl
 import ru.netology.nmedia.ui.posts.mapper.UiMapper
 
-class PostViewModel : ViewModel() {
-    private val postRepository: PostRepository = PostRepositoryImpl()
+class PostViewModel(application: Application) : AndroidViewModel(application) {
+    private val postRepository: PostRepository = PostRepositorySharedPrefsImpl(application)
     private val data: LiveData<List<PostInfo>> = postRepository.getPostsData()
 
     val uiData: LiveData<List<PostInfoUi>> = data

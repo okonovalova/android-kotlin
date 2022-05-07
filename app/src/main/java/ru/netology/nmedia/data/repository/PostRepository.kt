@@ -5,5 +5,5 @@ import ru.netology.nmedia.data.model.PostInfo
 
 interface PostRepository {
     fun getPostsData(): LiveData<List<PostInfo>>
-    fun updatePostsData(postInfo: List<PostInfo>)
+    fun updatePostsData(postsInfo: List<PostInfo>)
 }
