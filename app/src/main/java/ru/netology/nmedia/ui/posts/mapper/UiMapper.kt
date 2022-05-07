@@ -15,7 +15,9 @@ object UiMapper {
             authorName = postInfo.authorName,
             date = postInfo.date,
             content = postInfo.content,
-            linkPart = postInfo.linkPart
+            linkPart = postInfo.linkPart,
+            videoPreviewUrl = postInfo.videoPreviewUrl,
+            videoUrl = postInfo.videoUrl
         )
     }
 

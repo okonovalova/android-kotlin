@@ -14,13 +14,15 @@ class PostRepositoryImpl : PostRepository {
         authorName = "Нетология. Университет интернет-профессий",
         date = "21 мая 18:36",
         content = "Таким образом начало повседневной работы по формированию позиции способствует подготовки и реализации новых предложений. Идейные соображения высшего порядка, а также начало повседневной работы по формированию позиции играет важную роль в формировании форм развития. Равным образом рамки и место обучения кадров влечет за собой процесс внедрения и модернизации систем массового участия. Идейные соображения высшего порядка, а также дальнейшее развитие различных форм деятельности способствует подготовки и реализации существенных финансовых и административных условий. https://google.com",
-        linkPart = "https://google.com"
+        linkPart = "https://google.com",
+        videoPreviewUrl = "https://srisovki.one/wp-content/uploads/2021/07/2dc87a4b6139f778befe1ee92a17ae6a.jpg",
+        videoUrl = "https://youtu.be/oMcoF7J27Po"
     )
 
     private val posts: MutableList<PostInfo> =
         mutableListOf(
             postInfo,
-            postInfo.copy(id = 2, isLiked = true, sharedCount = 0),
+            postInfo.copy(id = 2, isLiked = true, sharedCount = 0, videoPreviewUrl = null, videoUrl = null),
             postInfo.copy(id = 3),
             postInfo.copy(id = 4),
             postInfo.copy(id = 5)

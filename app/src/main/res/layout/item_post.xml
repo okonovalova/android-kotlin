@@ -66,6 +66,30 @@
         app:layout_constraintTop_toBottomOf="@id/logo_imageview"
         tools:text="@string/post_text" />
 
+    <ImageView
+        android:id="@+id/post_video_preview_imageview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toTopOf="@id/likes_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_text_textview" />
+
+    <ImageView
+        android:id="@+id/play_imageview"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_play"
+        android:padding="8dp"
+        android:src="@drawable/ic_play"
+        app:layout_constraintBottom_toBottomOf="@id/post_video_preview_imageview"
+        app:layout_constraintEnd_toEndOf="@id/post_video_preview_imageview"
+        app:layout_constraintStart_toStartOf="@id/post_video_preview_imageview"
+        app:layout_constraintTop_toTopOf="@id/post_video_preview_imageview"
+        app:tint="@color/white" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/likes_button"
@@ -76,7 +100,7 @@
         android:layout_marginTop="12dp"
         app:icon="@drawable/ic_favorite_border_24"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/post_text_textview"
+        app:layout_constraintTop_toBottomOf="@id/post_video_preview_imageview"
         tools:text="10000" />
 
     <com.google.android.material.button.MaterialButton

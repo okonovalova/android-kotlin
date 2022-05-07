@@ -9,5 +9,7 @@ data class PostInfo(
     val authorName: String,
     val date: String,
     val content: String,
-    val linkPart: String?
+    val linkPart: String?,
+    val videoPreviewUrl: String? = null,
+    val videoUrl: String? = null
 )

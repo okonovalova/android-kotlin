@@ -1,10 +1,11 @@
 package ru.netology.nmedia.ui.posts.adapter
 
 import android.content.Context
+import android.view.View
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
-import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.ui.posts.model.PostInfoUi
 import ru.netology.nmedia.databinding.ItemPostBinding
 import ru.netology.nmedia.ui.extensions.setStyledSpan
@@ -25,6 +26,16 @@ class PostViewHolder(
             postTextTextview.text = postInfoUi.content
             postInfoUi.linkPart?.let { initLinkView(it) }
             updateLikeView(postInfoUi.isLiked)
+            if (postInfoUi.videoPreviewUrl == null) {
+                postVideoPreviewImageview.visibility = View.GONE
+                playImageview.visibility = View.GONE
+            } else {
+                postVideoPreviewImageview.visibility = View.VISIBLE
+                playImageview.visibility = View.VISIBLE
+                Glide.with(context)
+                    .load(postInfoUi.videoPreviewUrl)
+                    .into(postVideoPreviewImageview)
+            }
         }
         initListeners(postInfoUi)
     }
@@ -70,6 +81,10 @@ class PostViewHolder(
                     }
                 }
             }.show()
+        }
+
+        binding.postVideoPreviewImageview.setOnClickListener { view ->
+            postInfoUi.videoUrl?.let { url -> onInteractionListener.onPlayVideo(url) }
         }
     }
 }
