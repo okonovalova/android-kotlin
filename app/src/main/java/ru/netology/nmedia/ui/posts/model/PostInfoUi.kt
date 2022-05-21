@@ -3,7 +3,7 @@ package ru.netology.nmedia.ui.posts.model
 import java.io.Serializable
 
 data class PostInfoUi(
-    val id: Int,
+    val id: Long,
     val likesCount: String,
     val sharedCount: String,
     val viewsCount: String,

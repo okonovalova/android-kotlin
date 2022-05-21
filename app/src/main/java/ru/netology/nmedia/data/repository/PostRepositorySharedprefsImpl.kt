@@ -16,8 +16,8 @@ class PostRepositorySharedPrefsImpl(context: Context) : PostRepository {
     private val data = MutableLiveData(posts)
 
     init {
-        prefs.getString(key,null)?.let {
-            posts = gson.fromJson(it,type)
+        prefs.getString(key, null)?.let {
+            posts = gson.fromJson(it, type)
             data.value = posts
         }
     }
@@ -33,9 +33,10 @@ class PostRepositorySharedPrefsImpl(context: Context) : PostRepository {
         return data
     }
 
-    override fun updatePostsData(postsInfo: List<PostInfo>) {
-        data.value = postsInfo
-        sync()
-    }
+
+//    override fun updatePostsData(postsInfo: List<PostInfo>) {
+//        data.value = postsInfo
+//        sync()
+//    }
 
 }

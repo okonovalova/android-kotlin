@@ -2,15 +2,17 @@ package ru.netology.nmedia.ui.posts
 
 import android.app.Application
 import androidx.lifecycle.*
+import ru.netology.nmedia.data.db.AppDb
 import ru.netology.nmedia.data.model.PostInfo
 import ru.netology.nmedia.ui.posts.model.PostInfoUi
 import ru.netology.nmedia.data.repository.PostRepository
-import ru.netology.nmedia.data.repository.PostRepositoryImpl
-import ru.netology.nmedia.data.repository.PostRepositorySharedPrefsImpl
+import ru.netology.nmedia.data.repository.PostRepositorySQLiteImpl
 import ru.netology.nmedia.ui.posts.mapper.UiMapper
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val postRepository: PostRepository = PostRepositorySharedPrefsImpl(application)
+    private val postRepository: PostRepository = PostRepositorySQLiteImpl(
+        AppDb.getInstance(application).postDao
+    )
     private val data: LiveData<List<PostInfo>> = postRepository.getPostsData()
 
     val uiData: LiveData<List<PostInfoUi>> = data
@@ -21,16 +23,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     fun onLikeButtonClicked(postInfoUi: PostInfoUi) {
-        val posts = data.value?.toMutableList() ?: return
-        val index = posts.indexOfFirst { it.id == postInfoUi.id }
-        if (index == -1) return
-        val newLikesCount =
-            if (posts[index].isLiked) posts[index].likesCount - 1 else posts[index].likesCount + 1
-        posts[index] = posts[index].copy(
-            likesCount = newLikesCount,
-            isLiked = !postInfoUi.isLiked,
-        )
-        postRepository.updatePostsData(posts)
+        postRepository.likeByID(postInfoUi.id)
     }
 
     fun onShareButtonClicked(postInfoUi: PostInfoUi) {
@@ -38,15 +31,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         val index = posts.indexOfFirst { it.id == postInfoUi.id }
         if (index == -1) return
         posts[index] = posts[index].copy(sharedCount = posts[index].sharedCount + 1)
-        postRepository.updatePostsData(posts)
+        postRepository.updatePostsData(posts[index])
     }
 
     fun onRemoveMenuItemClicked(postInfoUi: PostInfoUi) {
-        val posts = data.value?.toMutableList() ?: return
-        val index = posts.indexOfFirst { it.id == postInfoUi.id }
-        if (index == -1) return
-        posts.remove(posts[index])
-        postRepository.updatePostsData(posts)
+        postRepository.removeById(postInfoUi.id)
     }
 
     fun onSaveButtonClicked(postText: String, postInfoUi: PostInfoUi?) {
@@ -54,10 +43,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun addPost(postText: String) {
-        val posts = data.value?.toMutableList() ?: return
-        val lastPostId = posts.lastOrNull()?.id ?: 0
         val post: PostInfo = PostInfo(
-            id = lastPostId + 1,
+            id = 0,
             likesCount = 0,
             sharedCount = 0,
             viewsCount = 0,
@@ -67,8 +54,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             content = postText,
             linkPart = ""
         )
-        posts.add(post)
-        postRepository.updatePostsData(posts)
+        postRepository.updatePostsData(post)
     }
 
     private fun editPost(postText: String, postInfoUi: PostInfoUi) {
@@ -77,7 +63,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         val index = posts.indexOfFirst { it.id == postId }
         if (index != -1) {
             posts[index] = posts[index].copy(content = postText)
-            postRepository.updatePostsData(posts)
+            postRepository.updatePostsData(posts[index])
         }
     }
 
