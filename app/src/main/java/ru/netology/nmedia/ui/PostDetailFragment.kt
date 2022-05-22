@@ -85,7 +85,6 @@ class PostDetailFragment : Fragment() {
     }
 
     private fun initObservers() {
-        viewModel.uiData.observe(viewLifecycleOwner) {}
         viewModel.postUiForDetail.observe(viewLifecycleOwner) { post ->
             post?.let { bind(it) }
         }
