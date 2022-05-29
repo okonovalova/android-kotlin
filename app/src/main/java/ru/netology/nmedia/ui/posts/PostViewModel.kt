@@ -23,13 +23,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-    val postUiForDetail: LiveData<PostInfoUi?> = uiData
+    val postUiForDetail: MutableLiveData<PostInfoUi?> = uiData
         .map {
             it.firstOrNull { it.id == idPostUiForDetail }
-        }
+        } as MutableLiveData<PostInfoUi?>
 
     fun initPostUiForDetail(id: Long) {
         idPostUiForDetail = id
+        val post = uiData.value?.firstOrNull{ it.id == idPostUiForDetail }
+        postUiForDetail.value = post
     }
 
     fun onLikeButtonClicked(postInfoUi: PostInfoUi) {

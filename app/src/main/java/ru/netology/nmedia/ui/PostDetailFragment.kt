@@ -42,7 +42,11 @@ class PostDetailFragment : Fragment() {
         initObservers()
     }
 
-
+    private fun initObservers() {
+        viewModel.postUiForDetail.observe(viewLifecycleOwner) { post ->
+            post?.let { bind(it) }
+        }
+    }
     private fun bind(postInfoUi: PostInfoUi) {
         with(binding) {
             likesButton.text = postInfoUi.likesCount
@@ -84,11 +88,7 @@ class PostDetailFragment : Fragment() {
         }
     }
 
-    private fun initObservers() {
-        viewModel.postUiForDetail.observe(viewLifecycleOwner) { post ->
-            post?.let { bind(it) }
-        }
-    }
+
 
     private fun initListeners(postInfoUi: PostInfoUi) {
         binding.likesButton.setOnClickListener {
