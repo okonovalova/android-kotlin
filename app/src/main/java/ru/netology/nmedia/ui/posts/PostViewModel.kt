@@ -17,6 +17,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val data: MutableLiveData<List<PostInfo>> = MutableLiveData(emptyList()) //postRepository.getPostsData()
 
     val isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
+    private var idPostUiForDetail: Long = -1
 
     val uiData: LiveData<List<PostInfoUi>> = data
         .map {
@@ -35,6 +36,17 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadPosts() {
            data.postValue(postRepository.getPostsData())
+    }
+
+    val postUiForDetail: MutableLiveData<PostInfoUi?> = uiData
+        .map {
+            it.firstOrNull { it.id == idPostUiForDetail }
+        } as MutableLiveData<PostInfoUi?>
+
+    fun initPostUiForDetail(id: Long) {
+        idPostUiForDetail = id
+        val post = uiData.value?.firstOrNull{ it.id == idPostUiForDetail }
+        postUiForDetail.value = post
     }
 
     fun onLikeButtonClicked(postInfoUi: PostInfoUi) {
