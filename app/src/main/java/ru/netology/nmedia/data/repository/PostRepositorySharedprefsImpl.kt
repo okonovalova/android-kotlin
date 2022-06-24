@@ -29,8 +29,8 @@ class PostRepositorySharedPrefsImpl(context: Context) : PostRepository {
         }
     }
 
-    override fun getPostsData(): LiveData<List<PostInfo>> {
-        return data
+    override fun getPostsData(): List<PostInfo> {
+        return data.value ?: emptyList()
     }
 
 
