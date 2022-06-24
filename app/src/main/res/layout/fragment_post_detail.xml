@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/logo_imageview"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_launcher_foreground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/logo_name_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/gray"
+                app:layout_constraintBottom_toTopOf="@id/post_date_textview"
+                app:layout_constraintEnd_toStartOf="@id/menu_imageview"
+                app:layout_constraintStart_toEndOf="@id/logo_imageview"
+                app:layout_constraintTop_toTopOf="@id/logo_imageview"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="@string/avatar_text" />
+
+            <TextView
+                android:id="@+id/post_date_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray"
+                app:layout_constraintBottom_toBottomOf="@id/logo_imageview"
+                app:layout_constraintStart_toStartOf="@id/logo_name_textview"
+                app:layout_constraintTop_toBottomOf="@id/logo_name_textview"
+                tools:text="@string/post_date" />
+
+            <ImageView
+                android:id="@+id/menu_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:padding="16dp"
+                android:src="@drawable/ic_more_vert_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/gray" />
+
+            <TextView
+                android:id="@+id/post_text_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="18dp"
+                android:textColor="@color/gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/logo_imageview"
+                tools:text="@string/post_text" />
+
+            <ImageView
+                android:id="@+id/post_video_preview_imageview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toTopOf="@id/likes_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/post_text_textview" />
+
+            <ImageView
+                android:id="@+id/play_imageview"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_play"
+                android:padding="8dp"
+                android:src="@drawable/ic_play"
+                app:layout_constraintBottom_toBottomOf="@id/post_video_preview_imageview"
+                app:layout_constraintEnd_toEndOf="@id/post_video_preview_imageview"
+                app:layout_constraintStart_toStartOf="@id/post_video_preview_imageview"
+                app:layout_constraintTop_toTopOf="@id/post_video_preview_imageview"
+                app:tint="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/likes_button"
+                style="@style/Post.MaterialButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="12dp"
+                app:icon="@drawable/ic_favorite_border_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/post_video_preview_imageview"
+                tools:text="10000" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/post_share_button"
+                style="@style/Post.MaterialButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                app:icon="@drawable/ic_share_24"
+                app:layout_constraintStart_toEndOf="@id/likes_button"
+                app:layout_constraintTop_toTopOf="@id/likes_button"
+                tools:text="1000" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/post_view_button"
+                style="@style/Post.MaterialButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                app:icon="@drawable/ic_eye_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/likes_button"
+                tools:text="1000" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

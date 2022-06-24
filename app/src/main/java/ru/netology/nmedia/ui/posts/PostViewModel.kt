@@ -14,6 +14,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         AppDb.getInstance(application).postDao
     )
     private val data: LiveData<List<PostInfo>> = postRepository.getPostsData()
+    private var idPostUiForDetail: Long = -1
 
     val uiData: LiveData<List<PostInfoUi>> = data
         .map {
@@ -22,8 +23,19 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
+    val postUiForDetail: MutableLiveData<PostInfoUi?> = uiData
+        .map {
+            it.firstOrNull { it.id == idPostUiForDetail }
+        } as MutableLiveData<PostInfoUi?>
+
+    fun initPostUiForDetail(id: Long) {
+        idPostUiForDetail = id
+        val post = uiData.value?.firstOrNull{ it.id == idPostUiForDetail }
+        postUiForDetail.value = post
+    }
+
     fun onLikeButtonClicked(postInfoUi: PostInfoUi) {
-        postRepository.likeByID(postInfoUi.id)
+        postRepository.likeById(postInfoUi.id)
     }
 
     fun onShareButtonClicked(postInfoUi: PostInfoUi) {

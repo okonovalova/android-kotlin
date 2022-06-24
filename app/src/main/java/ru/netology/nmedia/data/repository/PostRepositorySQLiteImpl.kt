@@ -31,7 +31,7 @@ class PostRepositorySQLiteImpl(
         data.value = posts
     }
 
-    override fun likeByID(id: Long) {
+    override fun likeById(id: Long) {
         dao.likeById(id)
         posts = posts.map {
             if (it.id == id) {

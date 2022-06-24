@@ -8,4 +8,5 @@ interface OnInteractionListener {
     fun onRemove(post: PostInfoUi)
     fun onShare(post: PostInfoUi)
     fun onPlayVideo(videoUrl: String)
+    fun onItemClicked(post: PostInfoUi)
 }

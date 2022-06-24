@@ -8,7 +8,7 @@ interface PostRepository {
 
     //fun updatePostsData(postsInfo: List<PostInfo>)
     fun updatePostsData(postsInfo: PostInfo) {}
-    fun likeByID(id: Long) {}
+    fun likeById(id: Long) {}
     fun removeById(id: Long) {}
     fun shareById(id: Long) {}
 }
