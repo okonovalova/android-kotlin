@@ -1,4 +1,5 @@
 package ru.netology.nmedia.data.repository
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.google.gson.Gson
@@ -14,7 +15,7 @@ import ru.netology.nmedia.ui.posts.mapper.UiMapper
 import java.util.concurrent.TimeUnit
 
 
-class PostRepositoryNetworkImpl: PostRepository {
+class PostRepositoryNetworkImpl : PostRepository {
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .build()
@@ -37,19 +38,19 @@ class PostRepositoryNetworkImpl: PostRepository {
             .let {
                 gson.fromJson<List<PostInfoData>>(it, typeToken.type)
                     .map {
-                            PostInfo(
-                                id = it.id,
-                                likesCount = it.likes,
-                                sharedCount = 0,
-                                viewsCount = 0,
-                                isLiked = it.likedByMe,
-                                authorName = it.author,
-                                date = "24 июня",
-                                content = it.content,
-                                linkPart = null,
-                                videoPreviewUrl = null,
-                                videoUrl = null
-                            )
+                        PostInfo(
+                            id = it.id,
+                            likesCount = it.likes,
+                            sharedCount = 0,
+                            viewsCount = 0,
+                            isLiked = it.likedByMe,
+                            authorName = it.author,
+                            date = "24 июня",
+                            content = it.content,
+                            linkPart = null,
+                            videoPreviewUrl = null,
+                            videoUrl = null
+                        )
                     }
             }
 

@@ -14,9 +14,9 @@ import kotlin.concurrent.thread
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val postRepository: PostRepository = PostRepositoryNetworkImpl()
-    private val data: MutableLiveData<List<PostInfo>> = MutableLiveData(emptyList()) //postRepository.getPostsData()
+    private val data: MutableLiveData<List<PostInfo>> =
+        MutableLiveData(emptyList()) //postRepository.getPostsData()
 
-    val isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     private var idPostUiForDetail: Long = -1
 
     val uiData: LiveData<List<PostInfoUi>> = data
@@ -28,14 +28,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         thread {
-            isLoading.postValue(true)
             loadPosts()
-            isLoading.postValue(false)
         }
     }
 
     fun loadPosts() {
-           data.postValue(postRepository.getPostsData())
+        data.postValue(postRepository.getPostsData())
     }
 
     val postUiForDetail: MutableLiveData<PostInfoUi?> = uiData
@@ -45,15 +43,13 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun initPostUiForDetail(id: Long) {
         idPostUiForDetail = id
-        val post = uiData.value?.firstOrNull{ it.id == idPostUiForDetail }
+        val post = uiData.value?.firstOrNull { it.id == idPostUiForDetail }
         postUiForDetail.value = post
     }
 
     fun onLikeButtonClicked(postInfoUi: PostInfoUi) {
         thread {
-            isLoading.postValue(true)
             postRepository.likeByID(postInfoUi.id, postInfoUi.isLiked)
-            isLoading.postValue(false)
             loadPosts()
 
         }
@@ -72,9 +68,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onRemoveMenuItemClicked(postInfoUi: PostInfoUi) {
         thread {
-            isLoading.postValue(true)
             postRepository.removeById(postInfoUi.id)
-            isLoading.postValue(false)
             loadPosts()
         }
     }
@@ -97,9 +91,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         )
 
         thread {
-            isLoading.postValue(true)
             postRepository.updatePostsData(post)
-            isLoading.postValue(false)
             loadPosts()
         }
     }
@@ -111,9 +103,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         if (index != -1) {
             posts[index] = posts[index].copy(content = postText)
             thread {
-                isLoading.postValue(true)
                 postRepository.updatePostsData(posts[index])
-                isLoading.postValue(false)
                 loadPosts()
             }
         }
