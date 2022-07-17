@@ -25,6 +25,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_URL", '"https://nmedia.herokuapp.com"'
+        }
+        debug {
+            buildConfigField "String", "BASE_URL", '"http://10.0.2.2:9999"'
         }
     }
     compileOptions {

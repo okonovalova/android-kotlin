@@ -11,5 +11,7 @@ data class PostInfo(
     val content: String,
     val linkPart: String?,
     val videoPreviewUrl: String? = null,
-    val videoUrl: String? = null
+    val videoUrl: String? = null,
+    val authorAvatar: String? = null,
+    val attachment: Attachment? = null
 )

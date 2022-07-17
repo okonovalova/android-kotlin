@@ -1,11 +1,11 @@
 package ru.netology.nmedia.data.repository
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import ru.netology.nmedia.data.model.Attachment
 import ru.netology.nmedia.data.model.PostInfo
 import ru.netology.nmedia.data.model.PostInfoData
 import java.io.IOException
@@ -34,21 +34,7 @@ class PostRepositoryEnqueueImpl : PostRepository {
             .let { it.body?.string() ?: throw RuntimeException("body is null") }
             .let {
                 gson.fromJson<List<PostInfoData>>(it, typeToken.type)
-                    .map {
-                        PostInfo(
-                            id = it.id,
-                            likesCount = it.likes,
-                            sharedCount = 0,
-                            viewsCount = 0,
-                            isLiked = it.likedByMe,
-                            authorName = it.author,
-                            date = "24 июня",
-                            content = it.content,
-                            linkPart = null,
-                            videoPreviewUrl = null,
-                            videoUrl = null
-                        )
-                    }
+                    .map(PostInfoMapper::mapDataToDomain)
             }
 
     }
@@ -64,21 +50,7 @@ class PostRepositoryEnqueueImpl : PostRepository {
                     val body = response.body?.string() ?: throw RuntimeException("body is null")
                     try {
                         callback.onSuccess(gson.fromJson<List<PostInfoData>>(body, typeToken.type)
-                            .map {
-                                PostInfo(
-                                    id = it.id,
-                                    likesCount = it.likes,
-                                    sharedCount = 0,
-                                    viewsCount = 0,
-                                    isLiked = it.likedByMe,
-                                    authorName = it.author,
-                                    date = "24 июня",
-                                    content = it.content,
-                                    linkPart = null,
-                                    videoPreviewUrl = null,
-                                    videoUrl = null
-                                )
-                            })
+                            .map (PostInfoMapper::mapDataToDomain))
                     } catch (e: Exception) {
                         callback.onError(e)
                     }
@@ -176,14 +148,7 @@ class PostRepositoryEnqueueImpl : PostRepository {
     }
 
     override fun updatePostsData(post: PostInfo) {
-        val postInfoData = PostInfoData(
-            post.id,
-            post.authorName,
-            post.content,
-            0,
-            post.isLiked,
-            post.likesCount
-        )
+        val postInfoData = PostInfoMapper.mapDomainToData(post)
         val request: Request = Request.Builder()
             .post(gson.toJson(postInfoData).toRequestBody(jsonType))
             .url("${BASE_URL}/api/posts")

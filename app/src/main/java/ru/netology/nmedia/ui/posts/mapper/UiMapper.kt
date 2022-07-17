@@ -17,7 +17,9 @@ object UiMapper {
             content = postInfo.content,
             linkPart = postInfo.linkPart,
             videoPreviewUrl = postInfo.videoPreviewUrl,
-            videoUrl = postInfo.videoUrl
+            videoUrl = postInfo.videoUrl,
+            authorAvatar = postInfo.authorAvatar,
+            attachment = postInfo.attachment
         )
     }
 
