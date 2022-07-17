@@ -3,18 +3,11 @@ package ru.netology.nmedia.ui.posts
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Response
-import ru.netology.nmedia.data.db.AppDb
 import ru.netology.nmedia.data.model.PostInfo
 import ru.netology.nmedia.ui.posts.model.PostInfoUi
 import ru.netology.nmedia.data.repository.PostRepository
 import ru.netology.nmedia.data.repository.PostRepositoryEnqueueImpl
-import ru.netology.nmedia.data.repository.PostRepositoryNetworkImpl
-import ru.netology.nmedia.data.repository.PostRepositorySQLiteImpl
 import ru.netology.nmedia.ui.posts.mapper.UiMapper
-import java.io.IOException
 import kotlin.concurrent.thread
 
 
@@ -122,7 +115,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             authorName = "Нетология. Университет интернет-профессий",
             date = "21 мая 18:36",
             content = postText,
-            linkPart = ""
+            linkPart = "",
+            authorAvatar = null,
+            attachment = null
         )
 
         thread {

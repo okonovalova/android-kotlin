@@ -1,5 +1,6 @@
 package ru.netology.nmedia.ui.posts.model
 
+import ru.netology.nmedia.data.model.Attachment
 import java.io.Serializable
 
 data class PostInfoUi(
@@ -13,5 +14,7 @@ data class PostInfoUi(
     val content: String,
     val linkPart: String?,
     val videoPreviewUrl: String?,
-    val videoUrl: String?
+    val videoUrl: String?,
+    val authorAvatar: String?,
+    val attachment: Attachment?
 ) : Serializable

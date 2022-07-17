@@ -5,7 +5,9 @@ import android.view.View
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
+import ru.netology.nmedia.data.model.AttachmentType
 import ru.netology.nmedia.ui.posts.model.PostInfoUi
 import ru.netology.nmedia.databinding.ItemPostBinding
 import ru.netology.nmedia.ui.extensions.setStyledSpan
@@ -18,6 +20,13 @@ class PostViewHolder(
 
     fun bind(postInfoUi: PostInfoUi) {
         with(binding) {
+            Glide.with(context)
+                .load("${BuildConfig.BASE_URL}/avatars/${postInfoUi.authorAvatar}")
+                .circleCrop()
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.ic_logo_error)
+                .timeout(10_000)
+                .into(logoImageview)
             likesButton.text = postInfoUi.likesCount
             postShareButton.text = postInfoUi.sharedCount
             postViewButton.text = postInfoUi.viewsCount
@@ -26,16 +35,23 @@ class PostViewHolder(
             postTextTextview.text = postInfoUi.content
             postInfoUi.linkPart?.let { initLinkView(it) }
             updateLikeView(postInfoUi.isLiked)
-            if (postInfoUi.videoPreviewUrl == null) {
+            if (postInfoUi.attachment == null) {
                 postVideoPreviewImageview.visibility = View.GONE
                 playImageview.visibility = View.GONE
             } else {
                 postVideoPreviewImageview.visibility = View.VISIBLE
-                playImageview.visibility = View.VISIBLE
+                if (postInfoUi.attachment.type == AttachmentType.VIDEO) {
+                    playImageview.visibility = View.VISIBLE
+                } else {
+                    playImageview.visibility = View.GONE
+                }
                 Glide.with(context)
-                    .load(postInfoUi.videoPreviewUrl)
+                    .load("${BuildConfig.BASE_URL}/images/${postInfoUi.attachment.url}")
+                    .error(R.drawable.ic_logo_error)
+                    .timeout(10_000)
                     .into(postVideoPreviewImageview)
             }
+
         }
         initListeners(postInfoUi)
     }
