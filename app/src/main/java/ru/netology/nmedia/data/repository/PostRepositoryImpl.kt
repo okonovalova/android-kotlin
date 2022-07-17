@@ -36,8 +36,8 @@ class PostRepositoryImpl : PostRepository {
 
     private val postsLiveData: MutableLiveData<List<PostInfo>> = MutableLiveData(posts)
 
-    override fun getPostsData(): LiveData<List<PostInfo>> {
-        return postsLiveData
+    override fun getPostsData(): List<PostInfo> {
+        return postsLiveData.value?: emptyList()
     }
 
 //    override fun updatePostsData(postsInfo: List<PostInfo>) {

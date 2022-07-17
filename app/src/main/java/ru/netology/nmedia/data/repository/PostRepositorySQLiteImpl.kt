@@ -16,7 +16,7 @@ class PostRepositorySQLiteImpl(
         data.value = posts
     }
 
-    override fun getPostsData(): LiveData<List<PostInfo>> = data
+    override fun getPostsData(): List<PostInfo> = data.value ?: emptyList()
 
     override fun updatePostsData(postsInfo: PostInfo) {
         val id = postsInfo.id
@@ -31,7 +31,7 @@ class PostRepositorySQLiteImpl(
         data.value = posts
     }
 
-    override fun likeById(id: Long) {
+    override fun likeByID(id: Long, isLiked: Boolean) {
         dao.likeById(id)
         posts = posts.map {
             if (it.id == id) {

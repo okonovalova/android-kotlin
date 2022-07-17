@@ -6,14 +6,17 @@ import ru.netology.nmedia.data.db.AppDb
 import ru.netology.nmedia.data.model.PostInfo
 import ru.netology.nmedia.ui.posts.model.PostInfoUi
 import ru.netology.nmedia.data.repository.PostRepository
+import ru.netology.nmedia.data.repository.PostRepositoryNetworkImpl
 import ru.netology.nmedia.data.repository.PostRepositorySQLiteImpl
 import ru.netology.nmedia.ui.posts.mapper.UiMapper
+import kotlin.concurrent.thread
+
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val postRepository: PostRepository = PostRepositorySQLiteImpl(
-        AppDb.getInstance(application).postDao
-    )
-    private val data: LiveData<List<PostInfo>> = postRepository.getPostsData()
+    private val postRepository: PostRepository = PostRepositoryNetworkImpl()
+    private val data: MutableLiveData<List<PostInfo>> =
+        MutableLiveData(emptyList()) //postRepository.getPostsData()
+
     private var idPostUiForDetail: Long = -1
 
     val uiData: LiveData<List<PostInfoUi>> = data
@@ -23,6 +26,16 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
+    init {
+        thread {
+            loadPosts()
+        }
+    }
+
+    fun loadPosts() {
+        data.postValue(postRepository.getPostsData())
+    }
+
     val postUiForDetail: MutableLiveData<PostInfoUi?> = uiData
         .map {
             it.firstOrNull { it.id == idPostUiForDetail }
@@ -30,12 +43,16 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun initPostUiForDetail(id: Long) {
         idPostUiForDetail = id
-        val post = uiData.value?.firstOrNull{ it.id == idPostUiForDetail }
+        val post = uiData.value?.firstOrNull { it.id == idPostUiForDetail }
         postUiForDetail.value = post
     }
 
     fun onLikeButtonClicked(postInfoUi: PostInfoUi) {
-        postRepository.likeById(postInfoUi.id)
+        thread {
+            postRepository.likeByID(postInfoUi.id, postInfoUi.isLiked)
+            loadPosts()
+
+        }
     }
 
     fun onShareButtonClicked(postInfoUi: PostInfoUi) {
@@ -43,11 +60,17 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         val index = posts.indexOfFirst { it.id == postInfoUi.id }
         if (index == -1) return
         posts[index] = posts[index].copy(sharedCount = posts[index].sharedCount + 1)
-        postRepository.updatePostsData(posts[index])
+        thread {
+            postRepository.updatePostsData(posts[index])
+            loadPosts()
+        }
     }
 
     fun onRemoveMenuItemClicked(postInfoUi: PostInfoUi) {
-        postRepository.removeById(postInfoUi.id)
+        thread {
+            postRepository.removeById(postInfoUi.id)
+            loadPosts()
+        }
     }
 
     fun onSaveButtonClicked(postText: String, postInfoUi: PostInfoUi?) {
@@ -66,7 +89,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             content = postText,
             linkPart = ""
         )
-        postRepository.updatePostsData(post)
+
+        thread {
+            postRepository.updatePostsData(post)
+            loadPosts()
+        }
     }
 
     private fun editPost(postText: String, postInfoUi: PostInfoUi) {
@@ -75,7 +102,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         val index = posts.indexOfFirst { it.id == postId }
         if (index != -1) {
             posts[index] = posts[index].copy(content = postText)
-            postRepository.updatePostsData(posts[index])
+            thread {
+                postRepository.updatePostsData(posts[index])
+                loadPosts()
+            }
         }
     }
 
