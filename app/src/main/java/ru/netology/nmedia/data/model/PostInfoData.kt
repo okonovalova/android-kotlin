@@ -6,5 +6,7 @@ class PostInfoData (
     val content: String,
     val published: Int,
     val likedByMe: Boolean,
-    val likes: Int
+    val likes: Int,
+    val authorAvatar: String? = null,
+    val attachment: AttachmentData? = null
     )

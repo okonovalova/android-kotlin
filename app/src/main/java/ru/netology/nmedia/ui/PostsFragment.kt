@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -77,6 +78,13 @@ class PostsFragment : Fragment() {
     private fun initObservers() {
         viewModel.uiData.observe(this.viewLifecycleOwner) { posts ->
             adapter.submitList(posts)
+        }
+        viewModel.error.observe(this.viewLifecycleOwner) {
+            val text = it
+            val duration = Toast.LENGTH_SHORT
+
+            val toast = Toast.makeText(requireContext(), text, duration)
+            toast.show()
         }
     }
 

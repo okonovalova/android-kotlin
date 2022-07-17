@@ -17,7 +17,7 @@ class PostRepositorySQLiteImpl(
 
     override fun getPostsData(): List<PostInfo> = data.value ?: emptyList()
 
-    override fun updatePostsData(postsInfo: PostInfo) {
+    override fun updatePostsData(postsInfo: PostInfo,callback: PostRepository.Callback<Unit>) {
         val id = postsInfo.id
         val saved = dao.save(postsInfo)
         posts = if (id == 0L) {
