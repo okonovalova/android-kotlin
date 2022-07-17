@@ -74,7 +74,7 @@ class PostRepositoryNetworkImpl : PostRepository {
         }
     }
 
-    override fun updatePostsData(post: PostInfo) {
+    override fun updatePostsData(post: PostInfo, callback: PostRepository.Callback<Unit>) {
         val postInfoData = PostInfoData(
             post.id,
             post.authorName,

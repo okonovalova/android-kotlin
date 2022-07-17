@@ -4,10 +4,12 @@ import okhttp3.Callback
 import ru.netology.nmedia.data.model.PostInfo
 
 interface PostRepository {
-    fun getPostsData(): List<PostInfo>
+    fun getPostsData(): List<PostInfo> {
+        return emptyList()
+    }
 
     //fun updatePostsData(postsInfo: List<PostInfo>)
-    fun updatePostsData(postsInfo: PostInfo) {}
+    fun updatePostsData(postsInfo: PostInfo, callback: Callback<Unit>) {}
     fun likeByID(id: Long, isLiked: Boolean) {}
     fun removeById(id: Long) {}
     fun shareById(id: Long) {}
@@ -16,6 +18,6 @@ interface PostRepository {
     fun removeByIdAsync(id: Long, callback: Callback<Unit>){}
     interface Callback <T>{
         fun onSuccess(result: T) {}
-        fun onError(e: Exception) {}
+        fun onError(e: Throwable) {}
     }
 }
