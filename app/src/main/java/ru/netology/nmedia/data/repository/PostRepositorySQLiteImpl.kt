@@ -1,6 +1,5 @@
 package ru.netology.nmedia.data.repository
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.data.db.PostDao
 import ru.netology.nmedia.data.model.PostInfo
@@ -64,4 +63,5 @@ class PostRepositorySQLiteImpl(
         }
         data.value = posts
     }
+
 }

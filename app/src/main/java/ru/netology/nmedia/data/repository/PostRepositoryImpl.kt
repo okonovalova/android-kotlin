@@ -1,6 +1,5 @@
 package ru.netology.nmedia.data.repository
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.data.model.PostInfo
 
@@ -39,6 +38,7 @@ class PostRepositoryImpl : PostRepository {
     override fun getPostsData(): List<PostInfo> {
         return postsLiveData.value?: emptyList()
     }
+
 
 //    override fun updatePostsData(postsInfo: List<PostInfo>) {
 //        postsLiveData.value = postsInfo
