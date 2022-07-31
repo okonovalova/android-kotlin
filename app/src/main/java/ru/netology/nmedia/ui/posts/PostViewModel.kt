@@ -7,15 +7,17 @@ import ru.netology.nmedia.data.model.PostInfo
 import ru.netology.nmedia.ui.posts.model.PostInfoUi
 import ru.netology.nmedia.data.repository.PostRepository
 import ru.netology.nmedia.data.repository.PostRepositoryEnqueueImpl
+import ru.netology.nmedia.data.repository.PostRepositoryRetrofitImpl
 import ru.netology.nmedia.ui.posts.mapper.UiMapper
+import ru.netology.nmedia.util.SingleLiveEvent
 import kotlin.concurrent.thread
 
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val postRepository: PostRepository = PostRepositoryEnqueueImpl()
+    private val postRepository: PostRepository = PostRepositoryRetrofitImpl()
     private val data: MutableLiveData<List<PostInfo>> =
         MutableLiveData(emptyList()) //postRepository.getPostsData()
-
+    val error: SingleLiveEvent<String> = SingleLiveEvent()
     private var idPostUiForDetail: Long = -1
 
     val uiData: LiveData<List<PostInfoUi>> = data
@@ -26,17 +28,18 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     init {
-         loadPosts()
+        loadPosts()
     }
 
     fun loadPosts() {
-       postRepository.getPostsDataAsync(
+        postRepository.getPostsDataAsync(
             object : PostRepository.Callback<List<PostInfo>> {
                 override fun onSuccess(posts: List<PostInfo>) {
                     data.postValue(posts)
                 }
 
-                override fun onError(e: Exception) {
+                override fun onError(e: Throwable) {
+                    error.postValue(e.message)
                     Log.d("getPostsDataAsync", "ERROR")
                 }
             }
@@ -65,7 +68,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                     loadPosts()
                 }
 
-                override fun onError(e: Exception) {
+                override fun onError(e: Throwable) {
+                    error.postValue(e.message)
                     Log.d("likeByIDAsync ${requestType}", "ERROR")
                 }
             })
@@ -77,10 +81,20 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         val index = posts.indexOfFirst { it.id == postInfoUi.id }
         if (index == -1) return
         posts[index] = posts[index].copy(sharedCount = posts[index].sharedCount + 1)
-        thread {
-            postRepository.updatePostsData(posts[index])
-            loadPosts()
-        }
+            postRepository.updatePostsData(
+                posts[index],
+                object : PostRepository.Callback<Unit> {
+                    override fun onSuccess(result: Unit) {
+                        Log.d("Share post", "SUCCESS")
+                        loadPosts()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        error.postValue(e.message)
+                        Log.d("Share post", "ERROR")
+                    }
+                }
+            )
     }
 
     fun onRemoveMenuItemClicked(postInfoUi: PostInfoUi) {
@@ -92,7 +106,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                     loadPosts()
                 }
 
-                override fun onError(e: Exception) {
+                override fun onError(e: Throwable) {
+                    error.postValue(e.message)
                     Log.d("removeByIdAsync", "ERROR")
                 }
             }
@@ -119,11 +134,20 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             authorAvatar = null,
             attachment = null
         )
+        postRepository.updatePostsData(
+            post,
+            object : PostRepository.Callback<Unit> {
+                override fun onSuccess(result: Unit) {
+                    Log.d("Add post", "SUCCESS")
+                    loadPosts()
+                }
 
-        thread {
-            postRepository.updatePostsData(post)
-            loadPosts()
-        }
+                override fun onError(e: Throwable) {
+                    error.postValue(e.message)
+                    Log.d("Add post", "ERROR")
+                }
+            })
+
     }
 
     private fun editPost(postText: String, postInfoUi: PostInfoUi) {
@@ -132,10 +156,18 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         val index = posts.indexOfFirst { it.id == postId }
         if (index != -1) {
             posts[index] = posts[index].copy(content = postText)
-            thread {
-                postRepository.updatePostsData(posts[index])
-                loadPosts()
-            }
+            postRepository.updatePostsData(
+                posts[index],
+                object : PostRepository.Callback<Unit> {
+                    override fun onSuccess(result: Unit) {
+                        Log.d("Edit post", "SUCCESS")
+                        loadPosts()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.d("Edit post", "ERROR")
+                    }
+                })
         }
     }
 

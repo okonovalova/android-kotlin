@@ -147,7 +147,7 @@ class PostRepositoryEnqueueImpl : PostRepository {
         }
     }
 
-    override fun updatePostsData(post: PostInfo) {
+    override fun updatePostsData(post: PostInfo, callback: PostRepository.Callback<Unit>) {
         val postInfoData = PostInfoMapper.mapDomainToData(post)
         val request: Request = Request.Builder()
             .post(gson.toJson(postInfoData).toRequestBody(jsonType))
