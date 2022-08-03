@@ -1,6 +1,6 @@
 package ru.netology.nmedia.ui.posts.mapper
 
-import ru.netology.nmedia.data.model.PostInfo
+import ru.netology.nmedia.domain.model.PostInfo
 import ru.netology.nmedia.ui.posts.model.PostInfoUi
 
 object UiMapper {

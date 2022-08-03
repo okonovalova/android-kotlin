@@ -1,4 +1,4 @@
-package ru.netology.nmedia.data.model
+package ru.netology.nmedia.domain.model
 
 class Attachment(
     val url: String,

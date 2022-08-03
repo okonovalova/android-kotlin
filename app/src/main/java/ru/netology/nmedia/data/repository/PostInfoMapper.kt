@@ -1,6 +1,9 @@
 package ru.netology.nmedia.data.repository
 
 import ru.netology.nmedia.data.model.*
+import ru.netology.nmedia.domain.model.Attachment
+import ru.netology.nmedia.domain.model.AttachmentType
+import ru.netology.nmedia.domain.model.PostInfo
 
 object PostInfoMapper {
     fun mapDataToDomain(postInfoData: PostInfoData): PostInfo {
@@ -51,6 +54,36 @@ object PostInfoMapper {
             postInfo.attachment?.let {
                 AttachmentData(it.url, it.description, mapAttachmentDomainToData(it.type))
             }
+        )
+    }
+
+    fun mapDbToDomain(postInfoEntity: PostInfoEntity): PostInfo{
+        return PostInfo(
+            id = postInfoEntity.id,
+            likesCount = postInfoEntity.likes,
+            sharedCount = 0,
+            viewsCount = 0,
+            isLiked = postInfoEntity.likedByMe,
+            authorName = postInfoEntity.author,
+            date = postInfoEntity.published,
+            content = postInfoEntity.content,
+            linkPart = null,
+            videoPreviewUrl = null,
+            videoUrl = null,
+            authorAvatar = postInfoEntity.authorAvatar,
+            attachment = null
+        )
+    }
+
+    fun mapDomainToDb(postInfo: PostInfo): PostInfoEntity{
+        return PostInfoEntity(
+            id = postInfo.id,
+            author = postInfo.authorName,
+            authorAvatar = postInfo.authorAvatar,
+            content = postInfo.content,
+            published = postInfo.date,
+            likedByMe = postInfo.isLiked,
+            likes = postInfo.likesCount
         )
     }
 

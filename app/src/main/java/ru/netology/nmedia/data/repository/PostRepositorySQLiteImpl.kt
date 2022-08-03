@@ -2,7 +2,7 @@ package ru.netology.nmedia.data.repository
 
 import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.data.db.PostDao
-import ru.netology.nmedia.data.model.PostInfo
+import ru.netology.nmedia.domain.model.PostInfo
 
 class PostRepositorySQLiteImpl(
     private val dao: PostDao
@@ -17,7 +17,7 @@ class PostRepositorySQLiteImpl(
 
     override fun getPostsData(): List<PostInfo> = data.value ?: emptyList()
 
-    override fun updatePostsData(postsInfo: PostInfo,callback: PostRepository.Callback<Unit>) {
+    override fun updatePostsData(postsInfo: PostInfo, callback: PostRepository.Callback<Unit>) {
         val id = postsInfo.id
         val saved = dao.save(postsInfo)
         posts = if (id == 0L) {

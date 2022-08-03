@@ -1,15 +1,13 @@
 package ru.netology.nmedia.data.repository
 
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.netology.nmedia.data.api.PostsApi
-import ru.netology.nmedia.data.model.PostInfo
+import ru.netology.nmedia.domain.model.PostInfo
 import ru.netology.nmedia.data.model.PostInfoData
 import java.lang.RuntimeException
-
+/*
 class PostRepositoryRetrofitImpl : PostRepository {
     override fun getPostsDataAsync(callback: PostRepository.Callback<List<PostInfo>>) {
         PostsApi.retrofitService.getAll().enqueue(object : Callback<List<PostInfoData>> {
@@ -108,4 +106,4 @@ class PostRepositoryRetrofitImpl : PostRepository {
             }
         })
     }
-}
+}*/

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
-import ru.netology.nmedia.data.model.AttachmentType
+import ru.netology.nmedia.domain.model.AttachmentType
 import ru.netology.nmedia.ui.posts.model.PostInfoUi
 import ru.netology.nmedia.databinding.ItemPostBinding
 import ru.netology.nmedia.ui.extensions.setStyledSpan
