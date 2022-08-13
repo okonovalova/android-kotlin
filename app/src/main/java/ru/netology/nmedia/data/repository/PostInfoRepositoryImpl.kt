@@ -84,4 +84,21 @@ class PostInfoRepositoryImpl(private val dao: PostDao) : PostInfoRepository {
         }
     }
 
+    override suspend fun dislikeById(id: Long) {
+        try {
+            val response = PostsApi.retrofitService.dislikeById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            val bodyToDomain = PostInfoMapper.mapDataToDomain(body)
+            dao.insert(PostInfoMapper.mapDomainToDb(bodyToDomain))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
+
 }

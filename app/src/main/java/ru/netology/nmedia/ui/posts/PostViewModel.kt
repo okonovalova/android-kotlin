@@ -61,14 +61,28 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onLikeButtonClicked(postInfoUi: PostInfoUi) {
         requestType = LikeByIdType(postInfoUi)
-        viewModelScope.launch {
-            try {
-                postInfoRepository.likeById(postInfoUi.id)
-            } catch (e: AppError) {
-                Log.d("likeById", e.toString())
-                error.postValue(e.code)
+
+        if (postInfoUi.isLiked){
+            viewModelScope.launch {
+                try {
+                    postInfoRepository.dislikeById(postInfoUi.id)
+                } catch (e: AppError) {
+                    Log.d("dislikeById", e.toString())
+                    error.postValue(e.code)
+                }
+
             }
 
+        } else {
+            viewModelScope.launch {
+                try {
+                    postInfoRepository.likeById(postInfoUi.id)
+                } catch (e: AppError) {
+                    Log.d("likeById", e.toString())
+                    error.postValue(e.code)
+                }
+
+            }
         }
 
     }

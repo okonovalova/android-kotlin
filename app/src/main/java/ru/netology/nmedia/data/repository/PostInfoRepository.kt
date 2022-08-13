@@ -9,4 +9,5 @@ interface PostInfoRepository {
     suspend fun save(post: PostInfo)
     suspend fun removeById(id: Long)
     suspend fun likeById(id: Long)
+    suspend fun dislikeById(id:Long)
 }
