@@ -72,27 +72,41 @@ class PostsFragment : Fragment() {
 
         initObservers()
         initListeners()
-
     }
 
     private fun initObservers() {
         viewModel.uiData.observe(this.viewLifecycleOwner) { posts ->
             adapter.submitList(posts)
+            binding.postListRecyclerview.post {
+                binding.postListRecyclerview.smoothScrollToPosition(
+                    0
+                )
+            }
         }
         viewModel.error.observe(this.viewLifecycleOwner) {
             val text = it ?: return@observe
             val snackbar = Snackbar.make(
                 binding.root, text,
                 Snackbar.LENGTH_LONG
-            ).setAction("Retry", { viewModel.retryLastRequest() })
+            ).setAction("Retry", { viewModel.onRetryLastRequestClicked() })
 
             snackbar.show()
+        }
+        viewModel.newerCount.observe(this.viewLifecycleOwner) {
+            val newerCount = viewModel.newerCount.value ?: return@observe
+            if (newerCount > 0) {
+                binding.showNewPostsTextview.visibility = View.VISIBLE
+            }
         }
     }
 
     private fun initListeners() {
         binding.addPostFab.setOnClickListener {
             findNavController().navigate(R.id.action_postsFragment_to_postAddEditFragment)
+        }
+        binding.showNewPostsTextview.setOnClickListener {
+            binding.showNewPostsTextview.visibility = View.GONE
+            viewModel.onShowNewPostsClicked()
         }
     }
 

@@ -26,16 +26,16 @@ object PostInfoMapper {
         )
     }
 
-    private fun mapAttachmentDataToDomain(type: String) : AttachmentType {
-        return when (type){
+    private fun mapAttachmentDataToDomain(type: String): AttachmentType {
+        return when (type) {
             "IMAGE" -> AttachmentType.IMAGE
             "VIDEO" -> AttachmentType.VIDEO
             else -> AttachmentType.OTHER
         }
     }
 
-    private fun mapAttachmentDomainToData(type: AttachmentType) : String {
-        return when (type){
+    private fun mapAttachmentDomainToData(type: AttachmentType): String {
+        return when (type) {
             AttachmentType.IMAGE -> "IMAGE"
             AttachmentType.VIDEO -> "VIDEO"
             else -> "OTHER"
@@ -57,7 +57,7 @@ object PostInfoMapper {
         )
     }
 
-    fun mapDbToDomain(postInfoEntity: PostInfoEntity): PostInfo{
+    fun mapDbToDomain(postInfoEntity: PostInfoEntity): PostInfo {
         return PostInfo(
             id = postInfoEntity.id,
             likesCount = postInfoEntity.likes,
@@ -75,7 +75,7 @@ object PostInfoMapper {
         )
     }
 
-    fun mapDomainToDb(postInfo: PostInfo): PostInfoEntity{
+    fun mapDomainToDb(postInfo: PostInfo): PostInfoEntity {
         return PostInfoEntity(
             id = postInfo.id,
             author = postInfo.authorName,
