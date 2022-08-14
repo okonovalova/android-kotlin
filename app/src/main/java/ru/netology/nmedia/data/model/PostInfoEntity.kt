@@ -13,4 +13,5 @@ data class PostInfoEntity(
     val published: String,
     val likedByMe: Boolean,
     val likes: Int = 0,
+    val isHidden: Boolean = false
 )

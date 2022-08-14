@@ -3,8 +3,11 @@ package ru.netology.nmedia.ui.posts
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.data.api.AppError
+import ru.netology.nmedia.data.api.DataResult
 import ru.netology.nmedia.data.repository.PostInfoRepository
 import ru.netology.nmedia.data.repository.PostInfoRepositoryImpl
 import ru.netology.nmedia.domain.model.PostInfo
@@ -13,13 +16,13 @@ import ru.netology.nmedia.ui.posts.mapper.UiMapper
 import ru.netology.nmedia.ui.posts.model.*
 import ru.netology.nmedia.util.SingleLiveEvent
 
-
 class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     private val postInfoRepository: PostInfoRepository =
         PostInfoRepositoryImpl(RoomDb.getInstance(context = application).postDao())
+
     private val data: LiveData<List<PostInfo>> =
-        postInfoRepository.data
+        postInfoRepository.data.asLiveData(Dispatchers.Main)
 
     val error: SingleLiveEvent<String> = SingleLiveEvent()
     private var idPostUiForDetail: Long = -1
@@ -32,19 +35,32 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 UiMapper.mapPostInfoToPostInfoUi(it)
             }
         }
+        .distinctUntilChanged()
+
+    val newerCount: LiveData<Int> = data.switchMap {
+        postInfoRepository.getNewerCount(it.firstOrNull()?.id ?: 0L)
+            .catch { e -> e.printStackTrace() }
+            .asLiveData(Dispatchers.Main)
+    }
 
     init {
         loadPosts()
+
     }
 
     fun loadPosts() {
         requestType = GetAllType
         viewModelScope.launch {
-            try {
-                postInfoRepository.getAll()
-            } catch (e: Exception) {
-                Log.d("loadPosts", e.toString())
-            }
+            postInfoRepository.getAll()
+                .collect { result ->
+                    if (result.status == DataResult.Status.SUCCESS) {
+                        Log.d("getAll", result.toString())
+                    } else {
+                        Log.d("getAll", result.toString())
+                        error.postValue(result.error?.code.orEmpty())
+                    }
+
+                }
         }
     }
 
@@ -62,29 +78,32 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun onLikeButtonClicked(postInfoUi: PostInfoUi) {
         requestType = LikeByIdType(postInfoUi)
 
-        if (postInfoUi.isLiked){
+        if (postInfoUi.isLiked) {
             viewModelScope.launch {
-                try {
-                    postInfoRepository.dislikeById(postInfoUi.id)
-                } catch (e: AppError) {
-                    Log.d("dislikeById", e.toString())
-                    error.postValue(e.code)
-                }
-
+                postInfoRepository.dislikeById(postInfoUi.id)
+                    .collect { result ->
+                        if (result.status == DataResult.Status.SUCCESS) {
+                            Log.d("disLikeById", result.toString())
+                        } else {
+                            Log.d("disLikeById", result.toString())
+                            error.postValue(result.error?.code.orEmpty())
+                        }
+                    }
             }
 
         } else {
             viewModelScope.launch {
-                try {
-                    postInfoRepository.likeById(postInfoUi.id)
-                } catch (e: AppError) {
-                    Log.d("likeById", e.toString())
-                    error.postValue(e.code)
-                }
-
+                postInfoRepository.likeById(postInfoUi.id)
+                    .collect { result ->
+                        if (result.status == DataResult.Status.SUCCESS) {
+                            Log.d("likeById", result.toString())
+                        } else {
+                            Log.d("likeById", result.toString())
+                            error.postValue(result.error?.code.orEmpty())
+                        }
+                    }
             }
         }
-
     }
 
     fun onShareButtonClicked(postInfoUi: PostInfoUi) {
@@ -111,12 +130,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun onRemoveMenuItemClicked(postInfoUi: PostInfoUi) {
         requestType = RemoveByIdType(postInfoUi)
         viewModelScope.launch {
-            try {
-                postInfoRepository.removeById(postInfoUi.id)
-            } catch (e: AppError) {
-                Log.d("removeById", e.toString())
-                error.postValue(e.code)
-            }
+            postInfoRepository.removeById(postInfoUi.id)
+                .collect { result ->
+                    if (result.status == DataResult.Status.SUCCESS) {
+                        Log.d("removeById", result.toString())
+                    } else {
+                        Log.d("removeById", result.toString())
+                        error.postValue(result.error?.code.orEmpty())
+                    }
+                }
         }
     }
 
@@ -126,7 +148,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun addPost(postText: String) {
-        val post: PostInfo = PostInfo(
+        val post = PostInfo(
             id = 0,
             likesCount = 0,
             sharedCount = 0,
@@ -140,12 +162,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             attachment = null
         )
         viewModelScope.launch {
-            try {
-                postInfoRepository.save(post)
-            } catch (e: AppError) {
-                Log.d("addPost", e.toString())
-                error.postValue(e.code)
-            }
+            postInfoRepository.save(post)
+                .collect { result ->
+                    if (result.status == DataResult.Status.SUCCESS) {
+                        Log.d("add", result.toString())
+                    } else {
+                        Log.d("add", result.toString())
+                        error.postValue(result.error?.code.orEmpty())
+                    }
+                }
         }
 
     }
@@ -157,23 +182,39 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         if (index != -1) {
             posts[index] = posts[index].copy(content = postText)
             viewModelScope.launch {
-                try {
-                    postInfoRepository.save(posts[index])
-                } catch (e: AppError) {
-                    Log.d("editPost", e.toString())
-                    error.postValue(e.code)
-                }
+                postInfoRepository.save(posts[index])
+                    .collect { result ->
+                        if (result.status == DataResult.Status.SUCCESS) {
+                            Log.d("edit", result.toString())
+                        } else {
+                            Log.d("edit", result.toString())
+                            error.postValue(result.error?.code.orEmpty())
+                        }
+                    }
             }
         }
     }
 
-    fun retryLastRequest() {
+    fun onRetryLastRequestClicked() {
         val type = requestType
         when (type) {
             is LikeByIdType -> onLikeButtonClicked(type.postInfoUi)
             GetAllType -> loadPosts()
             is SaveType -> onSaveButtonClicked(type.postText, type.postInfoUi)
             is RemoveByIdType -> onRemoveMenuItemClicked(type.postInfoUi)
+        }
+    }
+
+    fun onShowNewPostsClicked() {
+        viewModelScope.launch {
+            postInfoRepository.updateHiddenPosts()
+                .collect { result ->
+                    if (result.status == DataResult.Status.SUCCESS) {
+                        Log.d("updateHiddenPosts", result.toString())
+                    } else {
+                        Log.d("updateHiddenPosts", result.toString())
+                    }
+                }
         }
     }
 }

@@ -31,6 +31,9 @@ interface PostsApiService {
     @GET("posts")
     suspend fun getAll(): Response<List<PostInfoData>>
 
+    @GET("posts/{id}/newer")
+    suspend fun getNewer(@Path("id") id: Long): Response<List<PostInfoData>>
+
     @GET("posts/{id}")
     suspend fun getById(@Path("id") id: Long): Response<PostInfoData>
 
