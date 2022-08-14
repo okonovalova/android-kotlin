@@ -1,7 +1,6 @@
 package ru.netology.nmedia.data.repository
 
-import okhttp3.Callback
-import ru.netology.nmedia.data.model.PostInfo
+import ru.netology.nmedia.domain.model.PostInfo
 
 interface PostRepository {
     fun getPostsData(): List<PostInfo> {

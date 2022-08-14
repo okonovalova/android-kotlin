@@ -1,4 +1,4 @@
-package ru.netology.nmedia.data.model
+package ru.netology.nmedia.domain.model
 
 data class PostInfo(
     val id: Long,

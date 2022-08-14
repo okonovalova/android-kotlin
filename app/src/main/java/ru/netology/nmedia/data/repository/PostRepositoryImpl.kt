@@ -1,7 +1,7 @@
 package ru.netology.nmedia.data.repository
 
 import androidx.lifecycle.MutableLiveData
-import ru.netology.nmedia.data.model.PostInfo
+import ru.netology.nmedia.domain.model.PostInfo
 
 class PostRepositoryImpl : PostRepository {
     private val postInfo: PostInfo = PostInfo(

@@ -1,6 +1,6 @@
 package ru.netology.nmedia.ui.posts.model
 
-import ru.netology.nmedia.data.model.Attachment
+import ru.netology.nmedia.domain.model.Attachment
 import java.io.Serializable
 
 data class PostInfoUi(

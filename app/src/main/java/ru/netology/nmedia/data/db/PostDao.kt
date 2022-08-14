@@ -1,6 +1,6 @@
 package ru.netology.nmedia.data.db
 
-import ru.netology.nmedia.data.model.PostInfo
+import ru.netology.nmedia.domain.model.PostInfo
 
 interface PostDao {
     fun getAll(): List<PostInfo>

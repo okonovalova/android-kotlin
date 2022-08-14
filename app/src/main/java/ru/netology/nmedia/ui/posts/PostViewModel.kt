@@ -3,22 +3,28 @@ package ru.netology.nmedia.ui.posts
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
-import ru.netology.nmedia.data.model.PostInfo
-import ru.netology.nmedia.ui.posts.model.PostInfoUi
-import ru.netology.nmedia.data.repository.PostRepository
-import ru.netology.nmedia.data.repository.PostRepositoryEnqueueImpl
-import ru.netology.nmedia.data.repository.PostRepositoryRetrofitImpl
+import kotlinx.coroutines.launch
+import ru.netology.nmedia.data.api.AppError
+import ru.netology.nmedia.data.repository.PostInfoRepository
+import ru.netology.nmedia.data.repository.PostInfoRepositoryImpl
+import ru.netology.nmedia.domain.model.PostInfo
+import ru.netology.nmedia.data.room.RoomDb
 import ru.netology.nmedia.ui.posts.mapper.UiMapper
+import ru.netology.nmedia.ui.posts.model.*
 import ru.netology.nmedia.util.SingleLiveEvent
-import kotlin.concurrent.thread
 
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val postRepository: PostRepository = PostRepositoryRetrofitImpl()
-    private val data: MutableLiveData<List<PostInfo>> =
-        MutableLiveData(emptyList()) //postRepository.getPostsData()
+
+    private val postInfoRepository: PostInfoRepository =
+        PostInfoRepositoryImpl(RoomDb.getInstance(context = application).postDao())
+    private val data: LiveData<List<PostInfo>> =
+        postInfoRepository.data
+
     val error: SingleLiveEvent<String> = SingleLiveEvent()
     private var idPostUiForDetail: Long = -1
+
+    private var requestType: RequestType = GetAllType
 
     val uiData: LiveData<List<PostInfoUi>> = data
         .map {
@@ -32,18 +38,14 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadPosts() {
-        postRepository.getPostsDataAsync(
-            object : PostRepository.Callback<List<PostInfo>> {
-                override fun onSuccess(posts: List<PostInfo>) {
-                    data.postValue(posts)
-                }
-
-                override fun onError(e: Throwable) {
-                    error.postValue(e.message)
-                    Log.d("getPostsDataAsync", "ERROR")
-                }
+        requestType = GetAllType
+        viewModelScope.launch {
+            try {
+                postInfoRepository.getAll()
+            } catch (e: Exception) {
+                Log.d("loadPosts", e.toString())
             }
-        )
+        }
     }
 
     val postUiForDetail: MutableLiveData<PostInfoUi?> = uiData
@@ -58,65 +60,68 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun onLikeButtonClicked(postInfoUi: PostInfoUi) {
-        val requestType = if (postInfoUi.isLiked) "DELETE" else "POST"
-        postRepository.likeByIDAsync(
-            postInfoUi.id,
-            postInfoUi.isLiked,
-            object : PostRepository.Callback<Unit> {
-                override fun onSuccess(result: Unit) {
-                    Log.d("likeByIDAsync ${requestType}", "SUCCESS")
-                    loadPosts()
+        requestType = LikeByIdType(postInfoUi)
+
+        if (postInfoUi.isLiked){
+            viewModelScope.launch {
+                try {
+                    postInfoRepository.dislikeById(postInfoUi.id)
+                } catch (e: AppError) {
+                    Log.d("dislikeById", e.toString())
+                    error.postValue(e.code)
                 }
 
-                override fun onError(e: Throwable) {
-                    error.postValue(e.message)
-                    Log.d("likeByIDAsync ${requestType}", "ERROR")
+            }
+
+        } else {
+            viewModelScope.launch {
+                try {
+                    postInfoRepository.likeById(postInfoUi.id)
+                } catch (e: AppError) {
+                    Log.d("likeById", e.toString())
+                    error.postValue(e.code)
                 }
-            })
+
+            }
+        }
 
     }
 
     fun onShareButtonClicked(postInfoUi: PostInfoUi) {
-        val posts = data.value?.toMutableList() ?: return
-        val index = posts.indexOfFirst { it.id == postInfoUi.id }
-        if (index == -1) return
-        posts[index] = posts[index].copy(sharedCount = posts[index].sharedCount + 1)
-            postRepository.updatePostsData(
-                posts[index],
-                object : PostRepository.Callback<Unit> {
-                    override fun onSuccess(result: Unit) {
-                        Log.d("Share post", "SUCCESS")
-                        loadPosts()
-                    }
+        /* val posts = data.value?.toMutableList() ?: return
+         val index = posts.indexOfFirst { it.id == postInfoUi.id }
+         if (index == -1) return
+         posts[index] = posts[index].copy(sharedCount = posts[index].sharedCount + 1)
+         postInfoRepository.updatePostsData(
+             posts[index],
+             object : PostRepository.Callback<Unit> {
+                 override fun onSuccess(result: Unit) {
+                     Log.d("Share post", "SUCCESS")
+                     loadPosts()
+                 }
 
-                    override fun onError(e: Throwable) {
-                        error.postValue(e.message)
-                        Log.d("Share post", "ERROR")
-                    }
-                }
-            )
+                 override fun onError(e: Throwable) {
+                     error.postValue(e.message)
+                     Log.d("Share post", "ERROR")
+                 }
+             }
+         )*/
     }
 
     fun onRemoveMenuItemClicked(postInfoUi: PostInfoUi) {
-        postRepository.removeByIdAsync(
-            postInfoUi.id,
-            object : PostRepository.Callback<Unit> {
-                override fun onSuccess(result: Unit) {
-                    Log.d("removeByIdAsync", "SUCCESS")
-                    loadPosts()
-                }
-
-                override fun onError(e: Throwable) {
-                    error.postValue(e.message)
-                    Log.d("removeByIdAsync", "ERROR")
-                }
+        requestType = RemoveByIdType(postInfoUi)
+        viewModelScope.launch {
+            try {
+                postInfoRepository.removeById(postInfoUi.id)
+            } catch (e: AppError) {
+                Log.d("removeById", e.toString())
+                error.postValue(e.code)
             }
-        )
-
-
+        }
     }
 
     fun onSaveButtonClicked(postText: String, postInfoUi: PostInfoUi?) {
+        requestType = SaveType(postText, postInfoUi)
         if (postInfoUi == null) addPost(postText) else editPost(postText, postInfoUi)
     }
 
@@ -134,19 +139,14 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             authorAvatar = null,
             attachment = null
         )
-        postRepository.updatePostsData(
-            post,
-            object : PostRepository.Callback<Unit> {
-                override fun onSuccess(result: Unit) {
-                    Log.d("Add post", "SUCCESS")
-                    loadPosts()
-                }
-
-                override fun onError(e: Throwable) {
-                    error.postValue(e.message)
-                    Log.d("Add post", "ERROR")
-                }
-            })
+        viewModelScope.launch {
+            try {
+                postInfoRepository.save(post)
+            } catch (e: AppError) {
+                Log.d("addPost", e.toString())
+                error.postValue(e.code)
+            }
+        }
 
     }
 
@@ -156,19 +156,24 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         val index = posts.indexOfFirst { it.id == postId }
         if (index != -1) {
             posts[index] = posts[index].copy(content = postText)
-            postRepository.updatePostsData(
-                posts[index],
-                object : PostRepository.Callback<Unit> {
-                    override fun onSuccess(result: Unit) {
-                        Log.d("Edit post", "SUCCESS")
-                        loadPosts()
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.d("Edit post", "ERROR")
-                    }
-                })
+            viewModelScope.launch {
+                try {
+                    postInfoRepository.save(posts[index])
+                } catch (e: AppError) {
+                    Log.d("editPost", e.toString())
+                    error.postValue(e.code)
+                }
+            }
         }
     }
 
+    fun retryLastRequest() {
+        val type = requestType
+        when (type) {
+            is LikeByIdType -> onLikeButtonClicked(type.postInfoUi)
+            GetAllType -> loadPosts()
+            is SaveType -> onSaveButtonClicked(type.postText, type.postInfoUi)
+            is RemoveByIdType -> onRemoveMenuItemClicked(type.postInfoUi)
+        }
+    }
 }
